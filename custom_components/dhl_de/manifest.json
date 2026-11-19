@@ -1,0 +1,14 @@
+{
+  "domain": "dhl_de",
+  "name": "DHL Deutschland (Pakete & Briefankündigung)",
+  "codeowners": [
+    "@bcf84"
+  ],
+  "config_flow": true,
+  "documentation": "https://github.com/bcf84/ha-dhl-de",
+  "issue_tracker": "https://github.com/bcf84/ha-dhl-de/issues",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": [],
+  "version": "0.1.0"
+}

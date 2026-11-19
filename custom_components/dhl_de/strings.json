@@ -1,0 +1,61 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "DHL login",
+        "description": "1. Open this link in a browser and log in with your DHL account:\n\n[Open DHL login]({login_url})\n\n2. After login the browser tries to open the DHL app. Open the developer tools (F12) → Network/Console first; copy the URL starting with `dhllogin://de.deutschepost.dhl/login?code=`.\n\n3. Paste the full URL here (valid only a few minutes).",
+        "data": {
+          "login_code": "dhllogin:// Link"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate DHL",
+        "description": "DHL login expired.\n\n1. Open this link in a browser and log in with your DHL account:\n\n[Open DHL login]({login_url})\n\n2. After login the browser tries to open the DHL app. Open the developer tools (F12) → Network/Console first; copy the URL starting with `dhllogin://de.deutschepost.dhl/login?code=`.\n\n3. Paste the full URL here (valid only a few minutes).",
+        "data": {
+          "login_code": "dhllogin:// Link"
+        }
+      }
+    },
+    "error": {
+      "invalid_code": "No code found in the link.",
+      "invalid_auth": "DHL rejected the code (expired or already used).",
+      "cannot_connect": "Failed to connect to DHL.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "Account already configured.",
+      "reauth_successful": "Re-authentication successful."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options",
+        "data": {
+          "scan_interval": "Polling interval (minutes)"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "parcels_active": {
+        "name": "Parcels on the way"
+      },
+      "parcels_in_delivery": {
+        "name": "Parcels out for delivery"
+      },
+      "parcels_all": {
+        "name": "All shipments"
+      },
+      "letters": {
+        "name": "Letter announcement"
+      }
+    },
+    "image": {
+      "letter": {
+        "name": "Letter {number}"
+      }
+    }
+  }
+}
