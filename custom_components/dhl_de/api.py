@@ -8,12 +8,14 @@ from __future__ import annotations
 import asyncio
 import base64
 import hashlib
+import html
 import json
 import logging
+import re
 import time
 from http.cookies import SimpleCookie
 from typing import Any
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import unquote, urlparse
 
 import aiohttp
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -45,18 +47,37 @@ class DhlApiError(Exception):
     """Temporary communication problem."""
 
 
+_CODE_RE = re.compile(r"(?:^|[?&#\s'\"])code=([A-Za-z0-9._~\-]+)")
+
+
 def extract_code(dhl_login_url: str) -> str:
-    """Return the OAuth code from a dhllogin://...?code=... URL (or a bare code)."""
-    text = dhl_login_url.strip()
-    if "code=" not in text:
-        if text and "://" not in text and " " not in text:
-            return text
-        raise ValueError("no code")
-    query = text.split("?", 1)[1] if "?" in text else text
-    code = parse_qs(query).get("code", [None])[0]
-    if not code:
-        raise ValueError("no code")
-    return code
+    """Return the OAuth code from a dhllogin://...?code=... URL (or a bare code).
+
+    Tolerant: accepts the whole console line, URL-encoded links, HTML entities,
+    line breaks and surrounding quotes.
+    """
+    text = (dhl_login_url or "").strip()
+    for _ in range(3):  # undo (multiple) URL encoding
+        decoded = unquote(text)
+        if decoded == text:
+            break
+        text = decoded
+    text = html.unescape(text)
+    # remove line breaks / zero-width chars that may come from copying console text
+    text = re.sub(r"[\r\n\t​‌‍﻿]", "", text)
+
+    match = _CODE_RE.search(text)
+    if match:
+        return match.group(1)
+    # bare code pasted
+    if re.fullmatch(r"[A-Za-z0-9._~\-]{10,}", text):
+        return text
+    _LOGGER.warning(
+        "DHL Login: kein Code gefunden. Eingabe (%s Zeichen) beginnt mit: %r",
+        len(text),
+        text[:60],
+    )
+    raise ValueError("no code")
 
 
 def decode_jwt_claims(token: str | None) -> dict[str, Any]:

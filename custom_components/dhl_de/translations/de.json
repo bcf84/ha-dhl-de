@@ -3,21 +3,21 @@
     "step": {
       "user": {
         "title": "DHL Login",
-        "description": "1. Öffne diesen Link im Browser (am besten am PC) und melde dich mit deinem DHL-Konto an:\n\n[DHL Login öffnen]({login_url})\n\n2. Nach dem Login versucht der Browser die DHL-App zu öffnen und es passiert scheinbar nichts. Öffne vorher die Entwicklertools (F12) → Reiter **Netzwerk** bzw. **Konsole**. Dort steht ein Link, der mit `dhllogin://de.deutschepost.dhl/login?code=` beginnt.\n\n3. Kopiere diesen kompletten Link hier hinein. Der Code ist nur wenige Minuten gültig.",
+        "description": "1. [Hier klicken und bei DHL anmelden]({login_url}) – vorher **F12** drücken.\n2. Nach dem Login in der Konsole die **rote Zeile** mit `dhllogin://` markieren und kopieren (gern die ganze Zeile).\n3. Hier einfügen und absenden.",
         "data": {
           "login_code": "dhllogin:// Link"
         }
       },
       "reauth_confirm": {
         "title": "DHL neu anmelden",
-        "description": "Die DHL-Anmeldung ist abgelaufen.\n\n1. Öffne diesen Link im Browser (am besten am PC) und melde dich mit deinem DHL-Konto an:\n\n[DHL Login öffnen]({login_url})\n\n2. Nach dem Login versucht der Browser die DHL-App zu öffnen und es passiert scheinbar nichts. Öffne vorher die Entwicklertools (F12) → Reiter **Netzwerk** bzw. **Konsole**. Dort steht ein Link, der mit `dhllogin://de.deutschepost.dhl/login?code=` beginnt.\n\n3. Kopiere diesen kompletten Link hier hinein. Der Code ist nur wenige Minuten gültig.",
+        "description": "Die DHL-Anmeldung ist abgelaufen.\n\n1. [Hier klicken und bei DHL anmelden]({login_url}) – vorher **F12** drücken.\n2. Nach dem Login in der Konsole die **rote Zeile** mit `dhllogin://` markieren und kopieren (gern die ganze Zeile).\n3. Hier einfügen und absenden.",
         "data": {
           "login_code": "dhllogin:// Link"
         }
       }
     },
     "error": {
-      "invalid_code": "Im Link wurde kein Code gefunden. Bitte den kompletten dhllogin://…?code=… Link einfügen.",
+      "invalid_code": "Kein Code gefunden. Bitte die rote dhllogin://-Zeile aus der Konsole einfügen.",
       "invalid_auth": "DHL hat den Code abgelehnt (abgelaufen oder schon benutzt). Bitte neu einloggen und sofort einfügen.",
       "cannot_connect": "Verbindung zu DHL fehlgeschlagen.",
       "unknown": "Unerwarteter Fehler, siehe Log."

@@ -3,21 +3,21 @@
     "step": {
       "user": {
         "title": "DHL login",
-        "description": "1. Open this link in a browser and log in with your DHL account:\n\n[Open DHL login]({login_url})\n\n2. After login the browser tries to open the DHL app. Open the developer tools (F12) → Network/Console first; copy the URL starting with `dhllogin://de.deutschepost.dhl/login?code=`.\n\n3. Paste the full URL here (valid only a few minutes).",
+        "description": "1. [Click here and log in to DHL]({login_url}) – press **F12** first.\n2. After login, copy the **red line** containing `dhllogin://` from the console (whole line is fine).\n3. Paste it here and submit.",
         "data": {
           "login_code": "dhllogin:// Link"
         }
       },
       "reauth_confirm": {
         "title": "Re-authenticate DHL",
-        "description": "DHL login expired.\n\n1. Open this link in a browser and log in with your DHL account:\n\n[Open DHL login]({login_url})\n\n2. After login the browser tries to open the DHL app. Open the developer tools (F12) → Network/Console first; copy the URL starting with `dhllogin://de.deutschepost.dhl/login?code=`.\n\n3. Paste the full URL here (valid only a few minutes).",
+        "description": "DHL login expired.\n\n1. [Click here and log in to DHL]({login_url}) – press **F12** first.\n2. After login, copy the **red line** containing `dhllogin://` from the console (whole line is fine).\n3. Paste it here and submit.",
         "data": {
           "login_code": "dhllogin:// Link"
         }
       }
     },
     "error": {
-      "invalid_code": "No code found in the link.",
+      "invalid_code": "No code found. Paste the red dhllogin:// line from the console.",
       "invalid_auth": "DHL rejected the code (expired or already used).",
       "cannot_connect": "Failed to connect to DHL.",
       "unknown": "Unexpected error."
