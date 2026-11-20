@@ -12,12 +12,10 @@ Inoffiziell: nutzt dieselbe Schnittstelle wie die DHL-App. Kann brechen, wenn DH
 3. Einstellungen → Geräte & Dienste → Integration hinzufügen → **DHL Deutschland**.
 
 ## Login (einmalig)
-1. Im Dialog auf **DHL Login öffnen** klicken – am besten in **Chrome am PC**.
-2. **Vor** dem Login die Entwicklertools öffnen (F12, Reiter *Konsole*).
-3. Mit DHL-Konto anmelden (ggf. SMS/E-Mail-Code).
-4. Die Weiterleitung schlägt fehl – in der Konsole steht ein Link
-   `dhllogin://de.deutschepost.dhl/login?code=…`. Komplett kopieren und **sofort** einfügen
-   (der Code ist nur kurz gültig).
+Am PC (am Handy fehlt die Konsole):
+1. Im Dialog **F12** drücken, dann auf den Login-Link klicken und bei DHL anmelden.
+2. In der Konsole die **rote Zeile** mit `dhllogin://` kopieren (gern die ganze Zeile).
+3. Sofort im Dialog einfügen – der Code ist nur kurz gültig.
 
 Danach hält sich die Integration per Refresh-Token selbst angemeldet. Läuft der Token doch
 ab, meldet Home Assistant „Neu authentifizieren“ – dann die Schritte wiederholen.
@@ -31,9 +29,24 @@ Für die Briefankündigung muss sie in deinem DHL-/Post-Konto aktiviert sein.
 | `sensor.dhl_pakete_in_zustellung` | Pakete „in Zustellung“ (mit Zeitfenster/Stopps, falls vorhanden) |
 | `sensor.dhl_briefankundigung` | Anzahl angekündigter Briefe, Attribut `letters` |
 | `image.dhl_brief_1` … `_10` | entschlüsselte Scans der Briefe (1–3 standardmäßig aktiv) |
+| `sensor.dhl_paket_<name>` | **ein Sensor pro Paket**, automatisch angelegt und wieder entfernt, sobald DHL die Sendung archiviert. Zustand = DHL-Status, Details als Attribute |
 | `sensor.dhl_alle_sendungen` | alle nicht archivierten Sendungen (standardmäßig deaktiviert) |
 
 Abfrageintervall: Optionen der Integration (Standard 30 min, min. 10 min).
+
+## Paketliste im Dashboard (mit auto-entities)
+```yaml
+type: custom:auto-entities
+card:
+  type: entities
+  title: DHL Pakete
+filter:
+  include:
+    - attributes:
+        integration: dhl_de
+      entity_id: sensor.dhl_paket_*
+show_empty: false
+```
 
 ## Beispiel: Benachrichtigung bei Paket in Zustellung
 ```yaml
