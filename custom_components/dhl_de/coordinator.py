@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+import html
 import logging
+import re
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -21,6 +23,7 @@ from .const import (
     FORTSCHRITT_MAP,
     STATUS_DELIVERED,
     STATUS_OUT_FOR_DELIVERY,
+    STATUS_READY_FOR_PICKUP,
     STATUS_UNKNOWN,
     TRACKING_LINK,
 )
@@ -47,6 +50,17 @@ def _fmt_time(value: str | None) -> str | None:
         return value
 
 
+def _plain(text: str | None) -> str:
+    """Strip HTML tags/entities DHL puts into status texts."""
+    if not text:
+        return ""
+    text = re.sub(r"<[^>]+>", "", text)
+    return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
+_PICKUP_RE = re.compile(r"liegt in der (.+?) zur Abholung", re.IGNORECASE)
+
+
 def parse_parcel(sendung: dict[str, Any]) -> dict[str, Any]:
     """Convert a DHL 'sendung' into a flat dict."""
     info = sendung.get("sendungsinfo", {}) or {}
@@ -55,10 +69,14 @@ def parse_parcel(sendung: dict[str, Any]) -> dict[str, Any]:
     zustellung = details.get("zustellung", {}) or {}
     live = details.get("liveTracking") or {}
 
-    status_text = verlauf.get("kurzStatus") or verlauf.get("status") or ""
+    status_text = _plain(verlauf.get("kurzStatus") or verlauf.get("status"))
     status = FORTSCHRITT_MAP.get(verlauf.get("fortschritt"), STATUS_UNKNOWN)
-    if status == STATUS_UNKNOWN and "zugestellt" in status_text.lower():
+    lower = status_text.lower()
+    if status == STATUS_UNKNOWN and "zugestellt" in lower:
         status = STATUS_DELIVERED
+    pickup = _PICKUP_RE.search(status_text)
+    if status != STATUS_DELIVERED and (pickup or "zur abholung bereit" in lower or "abholbereit" in lower):
+        status = STATUS_READY_FOR_PICKUP
 
     window_from = _fmt_time(zustellung.get("zustellzeitfensterVon"))
     window_to = _fmt_time(zustellung.get("zustellzeitfensterBis"))
@@ -71,6 +89,8 @@ def parse_parcel(sendung: dict[str, Any]) -> dict[str, Any]:
         "direction": info.get("sendungsrichtung"),
         "link": TRACKING_LINK.format(sendung.get("id")),
     }
+    if status == STATUS_READY_FOR_PICKUP and pickup:
+        parcel["pickup_location"] = pickup.group(1).strip()
     if window_from and window_to:
         parcel["delivery_window"] = f"{window_from}-{window_to}"
     if live:
@@ -154,6 +174,11 @@ class DhlCoordinator(DataUpdateCoordinator[DhlData]):
     def active(parcels: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Parcels not delivered yet."""
         return [p for p in parcels if p["status"] != STATUS_DELIVERED]
+
+    @staticmethod
+    def ready_for_pickup(parcels: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        """Parcels waiting in a Packstation / Filiale."""
+        return [p for p in parcels if p["status"] == STATUS_READY_FOR_PICKUP]
 
     @staticmethod
     def in_delivery(parcels: list[dict[str, Any]]) -> list[dict[str, Any]]:

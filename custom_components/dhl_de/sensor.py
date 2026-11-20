@@ -20,6 +20,7 @@ from .const import (
     STATUS_IN_PREPARATION,
     STATUS_IN_TRANSIT,
     STATUS_OUT_FOR_DELIVERY,
+    STATUS_READY_FOR_PICKUP,
     STATUS_REGISTERED,
 )
 from .coordinator import DhlCoordinator, DhlData
@@ -49,6 +50,14 @@ SENSORS: tuple[DhlSensorDescription, ...] = (
         state_class=SensorStateClass.MEASUREMENT,
         native_unit_of_measurement="Pakete",
         items_fn=lambda d: DhlCoordinator.in_delivery(d.parcels),
+    ),
+    DhlSensorDescription(
+        key="parcels_ready_for_pickup",
+        translation_key="parcels_ready_for_pickup",
+        icon="mdi:locker-multiple",
+        state_class=SensorStateClass.MEASUREMENT,
+        native_unit_of_measurement="Pakete",
+        items_fn=lambda d: DhlCoordinator.ready_for_pickup(d.parcels),
     ),
     DhlSensorDescription(
         key="parcels_all",
@@ -146,6 +155,7 @@ STATUS_ICONS = {
     STATUS_IN_PREPARATION: "mdi:package-variant-closed",
     STATUS_IN_TRANSIT: "mdi:truck-fast",
     STATUS_OUT_FOR_DELIVERY: "mdi:truck-delivery",
+    STATUS_READY_FOR_PICKUP: "mdi:locker",
     STATUS_DELIVERED: "mdi:package-variant-closed-check",
 }
 
@@ -176,7 +186,10 @@ class DhlParcelSensor(CoordinatorEntity[DhlCoordinator], SensorEntity):
         parcel = self._parcel() or {}
         label = parcel.get("name")
         if not label or label == "Unbekannt":
-            label = self._parcel_id
+            return f"Paket {self._parcel_id}"
+        same_name = [p for p in self.coordinator.data.parcels if p.get("name") == label]
+        if len(same_name) > 1:
+            return f"Paket {label} …{self._parcel_id[-4:]}"
         return f"Paket {label}"
 
     @property

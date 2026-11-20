@@ -27,6 +27,7 @@ Für die Briefankündigung muss sie in deinem DHL-/Post-Konto aktiviert sein.
 |---|---|
 | `sensor.dhl_pakete_unterwegs` | Anzahl nicht zugestellter Sendungen, Liste im Attribut `parcels` |
 | `sensor.dhl_pakete_in_zustellung` | Pakete „in Zustellung“ (mit Zeitfenster/Stopps, falls vorhanden) |
+| `sensor.dhl_pakete_abholbereit` | Pakete, die in Packstation/Filiale liegen, mit `pickup_location` |
 | `sensor.dhl_briefankundigung` | Anzahl angekündigter Briefe, Attribut `letters` |
 | `image.dhl_brief_1` … `_10` | entschlüsselte Scans der Briefe (1–3 standardmäßig aktiv) |
 | `sensor.dhl_paket_<name>` | **ein Sensor pro Paket**, automatisch angelegt und wieder entfernt, sobald DHL die Sendung archiviert. Zustand = DHL-Status, Details als Attribute |

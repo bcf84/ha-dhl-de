@@ -51,6 +51,7 @@ STATUS_REGISTERED = "registered"
 STATUS_IN_PREPARATION = "in_preparation"
 STATUS_IN_TRANSIT = "in_transit"
 STATUS_OUT_FOR_DELIVERY = "out_for_delivery"
+STATUS_READY_FOR_PICKUP = "ready_for_pickup"
 STATUS_DELIVERED = "delivered"
 STATUS_UNKNOWN = "unknown"
 FORTSCHRITT_MAP = {

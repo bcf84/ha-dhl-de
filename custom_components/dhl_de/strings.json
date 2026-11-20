@@ -50,6 +50,9 @@
       },
       "letters": {
         "name": "Letter announcement"
+      },
+      "parcels_ready_for_pickup": {
+        "name": "Parcels ready for pickup"
       }
     },
     "image": {

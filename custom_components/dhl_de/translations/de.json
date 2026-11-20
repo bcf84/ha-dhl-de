@@ -50,6 +50,9 @@
       },
       "letters": {
         "name": "Briefankündigung"
+      },
+      "parcels_ready_for_pickup": {
+        "name": "Pakete abholbereit"
       }
     },
     "image": {
